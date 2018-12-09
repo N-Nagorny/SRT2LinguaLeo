@@ -26,9 +26,13 @@ for subtitle in subtitles:
 seen = set()
 result = []
 for item in srt_words:
-    if item not in seen and item not in learned_words and len(item) > 1:
+    if item not in seen and item not in learned_words and len(item) > 2 and not item.isdigit():
         seen.add(item)
         result.append(item)
+
+for word in seen:
+    lingualeo.add_word(word, word)
+
 with open(export_filename, 'w') as f:
     for item in seen:
         f.write("%s\n" % item)
