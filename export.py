@@ -12,7 +12,6 @@ lingualeo = service.Lingualeo(email, password)
 lingualeo.auth()
 
 learned_words = lingualeo.get_all_words()
-learned_words = [text.encode("utf8") for text in learned_words]
 
 with open(srt_file, 'r') as myfile:
     srt_data=myfile.read()
@@ -20,19 +19,13 @@ with open(srt_file, 'r') as myfile:
 subtitle_generator = srt.parse(srt_data);
 subtitles = list(subtitle_generator)
 srt_words = []
-for subtitle in subtitles:
-	wordList = re.sub("[^\w]", " ",  subtitle.content).split()
-	srt_words.extend(wordList)
 seen = set()
-result = []
-for item in srt_words:
-    if item not in seen and item not in learned_words and len(item) > 2 and not item.isdigit():
-        seen.add(item)
-        result.append(item)
-
-for word in seen:
-    lingualeo.add_word(word, word)
 
 with open(export_filename, 'w') as f:
-    for item in seen:
-        f.write("%s\n" % item)
+	for subtitle in subtitles:
+		wordList = re.sub("[^\w]", " ",  subtitle.content).split()
+		for word in wordList:
+			if word not in seen and word not in learned_words and len(word) > 2 and not word.isdigit():
+				seen.add(word.lower())
+				f.write("%s\n" % word)
+				lingualeo.add_word(word, subtitle.content)
