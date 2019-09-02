@@ -2,7 +2,7 @@ Just an initial dirty implementation of a Python script for getting a set of wor
 
 Inspired by https://habr.com/post/276495/ and https://habr.com/post/345864/.
 
-Tested with Python 2.7.6, can be run like:
+Tested with Python 3.5.2, can be run like:
 
 python export.py <LinguaLeo_login> <LinguaLeo_pass> <srt_file> <file_for_export>
 

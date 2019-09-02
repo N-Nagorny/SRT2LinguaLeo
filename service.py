@@ -1,17 +1,18 @@
-import urllib
-import urllib2
+import requests
 import json
-from cookielib import CookieJar
+import urllib.request
+import urllib.parse
+import http.cookiejar
 
 
 class Lingualeo:
     def __init__(self, email, password):
         self.email = email
         self.password = password
-        self.cj = CookieJar()
+        self.cj = requests.Session()
 
     def auth(self):
-        url = "http://api.lingualeo.com/api/login"
+        url = "https://api.lingualeo.com/api/login"
         values = {
             "email": self.email,
             "password": self.password
@@ -44,12 +45,9 @@ class Lingualeo:
             return e.message
 
     def get_content(self, url, values):
-        data = urllib.urlencode(values)
+        resp = self.cj.get(url=url, params=values)
 
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cj))
-        req = opener.open(url, data)
-
-        return json.loads(req.read())
+        return resp.json()
 
     def get_page(self, page_number):
         url = 'http://lingualeo.com/ru/userdict/json'
@@ -77,6 +75,6 @@ class Lingualeo:
                 have_periods = False
             page_number += 1
         for word in raw:
-			if(word['progress_percent'] == 100):
-				words.append(word['word_value'])
+            if(word['progress_percent'] == 100):
+                words.append(word['word_value'])
         return words
